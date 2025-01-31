@@ -4,248 +4,261 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checklist Download</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
 body {
-font-family: Arial, sans-serif;
-margin: 0;
-padding: 0;
-background-color: #f4f4f4;
-color: #333;
+    font-family: 'Nunito', 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background: #4A90E2;
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+    position: relative;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 3.5rem;
+}
+
+header p {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-text-align: center;
-margin-top: 20px;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 2.5rem;
 }
 
 form {
-width: 90%;
-max-width: 800px;
-margin: 20px auto;
-background-color: white;
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    margin: 30px auto;
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 label {
-display: block;
-margin-bottom: 8px;
-font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
 select {
-width: 100%;
-padding: 8px;
-margin-bottom: 15px;
-border: 1px solid #ccc;
-border-radius: 4px;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
 }
 
 input[type="submit"] {
-width: 100%;
-padding: 10px;
-background-color: #4CAF50;
-color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-font-size: 16px;
+    width: 100%;
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 input[type="submit"]:hover {
-background-color: #45a049;
+    background-color: #0056b3;
 }
 
-/* Two-column layout for larger screens */
-.two-column-form {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 20px;
+#popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    background: white;
+    padding: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
 }
 
-.two-column-form label {
-margin-bottom: 5px;
+#popup a {
+    color: #007bff;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.2rem;
 }
 
-.two-column-form select {
-width: 100%;
+#popup .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 25px;
+    cursor: pointer;
 }
 
-#result {
-text-align: center;
-margin-top: 20px;
-}
-
-#downloadLink {
-text-align: center;
-margin-top: 20px;
-}
-
-#noChecklistMessage {
-color: red;
-font-weight: bold;
-text-align: center;
-margin-top: 20px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-.two-column-form {
-grid-template-columns: 1fr; /* Stack the columns on smaller screens */
-}
-
-input[type="submit"] {
-width: 100%; /* Make the submit button span full width */
-}
-}
-
-/* Further responsiveness for very small screens */
-@media (max-width: 480px) {
-h1 {
-font-size: 20px; /* Smaller title on smaller devices */
-}
-
-form {
-padding: 15px; /* Reduce padding on smaller screens */
-}
-
-label {
-font-size: 14px; /* Smaller label text */
-}
-
-select, input[type="submit"] {
-font-size: 14px; /* Smaller font for selects and submit button */
-}
+#popup.no-checklist {
+    background-color: #ffd5d5;
+    font-size: 1.2rem;
 }
 </style>
 <script>
-// Function to fetch checklist data from Google Sheets through the Apps Script Web App
+let checklistData = [];
+
 function fetchChecklistData() {
-const apiUrl = 'https://script.google.com/macros/s/AKfycbw3jzuUp7je0s88G_BhEwF2o6JUgjJCetMcZGBLAJ19X_6BZCwEiVkiVBpR5OAYcBqh/exec'; // Your Web App URL
+    const apiUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTolnOmjUc2XLxPiIxEJeG6TiovlMLceld09zwH4RjLQ_rgurSurest4AQH_xTjVE6-Ejex1iMpQx5s/pub?gid=2079994373&single=true&output=csv';
 
-fetch(apiUrl)
-.then(response => response.json())
-.then(data => {
-checklistData = data; // Store the fetched data for comparison
-console.log('Checklist Data Loaded:', checklistData);
-})
-.catch(error => console.error('Error loading checklist data:', error));
+    fetch(apiUrl)
+        .then(response => response.text())
+        .then(data => {
+            checklistData = data.split('\n').slice(1).map(row => {
+                const cols = row.split(',');
+                return {
+                    destination: cols[0],
+                    nationality: cols[1],
+                    residenceCountry: cols[2],
+                    occupation: cols[3],
+                    purpose: cols[4],
+                    visaHolding: cols[5],
+                    downloadLink: cols[6]
+                };
+            });
+            console.log('Checklist Data Loaded:', checklistData);
+        })
+        .catch(error => console.error('Error loading checklist data:', error));
 }
 
-// Function to populate dropdowns with predefined options
 function populateDropdowns() {
-const dropdownData = {
-destination: ['USA', 'Canada', 'Germany', 'France'],
-nationality: ['US', 'India', 'UK', 'Canada'],
-residenceCountry: ['USA', 'India', 'UK', 'Australia'],
-occupation: ['Engineer', 'Doctor', 'Teacher', 'Artist'],
-purpose: ['Business', 'Tourism', 'Study', 'Medical'],
-visaHolding: ['USA', 'Canada', 'Germany', 'France']
-};
+    const dropdownData = {
+        destination: ['USA', 'Canada', 'Germany', 'France'],
+        nationality: ['US', 'India', 'UK', 'Canada'],
+        residenceCountry: ['USA', 'India', 'UK', 'Australia'],
+        occupation: ['Engineer', 'Doctor', 'Teacher', 'Artist'],
+        purpose: ['Business', 'Tourism', 'Study', 'Medical'],
+        visaHolding: ['USA', 'Canada', 'Germany', 'France']
+    };
 
-// Populate each dropdown with options
-for (const key in dropdownData) {
-const dropdown = document.getElementById(key);
-dropdownData[key].forEach(optionText => {
-const option = document.createElement('option');
-option.value = optionText;
-option.innerHTML = optionText;
-dropdown.appendChild(option);
-});
-}
+    for (const key in dropdownData) {
+        const dropdown = document.getElementById(key);
+        dropdownData[key].forEach(optionText => {
+            const option = document.createElement('option');
+            option.value = optionText;
+            option.innerHTML = optionText;
+            dropdown.appendChild(option);
+        });
+    }
 }
 
-// Function to handle form submission and show checklist download link based on selected criteria
 function showDownloadLink() {
-const destination = document.getElementById("destination").value.trim().toLowerCase();
-const nationality = document.getElementById("nationality").value.trim().toLowerCase();
-const residenceCountry = document.getElementById("residenceCountry").value.trim().toLowerCase();
-const occupation = document.getElementById("occupation").value.trim().toLowerCase();
-const purpose = document.getElementById("purpose").value.trim().toLowerCase();
-const visaHolding = document.getElementById("visaHolding").value.trim().toLowerCase();
+    const destination = document.getElementById("destination").value.trim().toLowerCase();
+    const nationality = document.getElementById("nationality").value.trim().toLowerCase();
+    const residenceCountry = document.getElementById("residenceCountry").value.trim().toLowerCase();
+    const occupation = document.getElementById("occupation").value.trim().toLowerCase();
+    const purpose = document.getElementById("purpose").value.trim().toLowerCase();
+    const visaHolding = document.getElementById("visaHolding").value.trim().toLowerCase();
 
-// Hide the download link and message initially
-document.getElementById("downloadLink").style.display = "none";
-document.getElementById("noChecklistMessage").style.display = "none";
+    const popup = document.getElementById('popup');
+    popup.style.display = 'none';
+    popup.classList.remove('no-checklist');
 
-let found = false;
+    let found = false;
 
-// Check the selected criteria against the fetched data
-checklistData.forEach(row => {
-if (row.destination.toLowerCase() === destination &&
-row.nationality.toLowerCase() === nationality &&
-row.residenceCountry.toLowerCase() === residenceCountry &&
-row.occupation.toLowerCase() === occupation &&
-row.purpose.toLowerCase() === purpose &&
-row.visaHolding.toLowerCase() === visaHolding) {
-found = true;
-document.getElementById("downloadLink").style.display = "block";
-document.getElementById("downloadLink").innerHTML = `<a href="${row.downloadLink}" target="_blank">Download the Checklist</a>`;
+    checklistData.forEach(row => {
+        if (row.destination.toLowerCase() === destination &&
+            row.nationality.toLowerCase() === nationality &&
+            row.residenceCountry.toLowerCase() === residenceCountry &&
+            row.occupation.toLowerCase() === occupation &&
+            row.purpose.toLowerCase() === purpose &&
+            row.visaHolding.toLowerCase() === visaHolding) {
+            found = true;
+            popup.style.display = 'block';
+            popup.innerHTML = `<span class="close" onclick="closePopup()">&#x2715;</span><a href="${row.downloadLink}" target="_blank">Download the Checklist</a>`;
+        }
+    });
+
+    if (!found) {
+        popup.style.display = 'block';
+        popup.classList.add('no-checklist');
+        popup.innerHTML = `<span class="close" onclick="closePopup()">&#x2715;</span> No checklist file found for the selected criteria.`;
+    }
 }
-});
 
-// If no match is found, show the "No checklist file found" message
-if (!found) {
-document.getElementById("noChecklistMessage").style.display = "block";
-}
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
 }
 
-// Call fetchChecklistData when the page loads to load the checklist data
 window.onload = function() {
-fetchChecklistData();
-populateDropdowns();
+    fetchChecklistData();
+    populateDropdowns();
 };
 </script>
 </head>
 <body>
+
+<!-- Header -->
+<header>
+    <h1>GLODO</h1>
+    <p>Your Trusted Partner for Visa Consultation & Flight Ticket Booking</p>
+</header>
+
+<!-- Main Content -->
 <h1>Checklist Download</h1>
 <form onsubmit="event.preventDefault(); showDownloadLink();">
-<div class="two-column-form">
-<div>
-<label for="destination">Destination: </label>
-<select id="destination" required>
-<option value="">Select Destination</option>
-</select>
-</div>
-<div>
-<label for="nationality">Nationality: </label>
-<select id="nationality" required>
-<option value="">Select Nationality</option>
-</select>
-</div>
-<div>
-<label for="residenceCountry">Residence Country: </label>
-<select id="residenceCountry" required>
-<option value="">Select Residence Country</option>
-</select>
-</div>
-<div>
-<label for="occupation">Occupation: </label>
-<select id="occupation" required>
-<option value="">Select Occupation</option>
-</select>
-</div>
-<div>
-<label for="purpose">Purpose of Visit: </label>
-<select id="purpose" required>
-<option value="">Select Purpose</option>
-</select>
-</div>
-<div>
-<label for="visaHolding">Visa Holding: </label>
-<select id="visaHolding" required>
-<option value="">Select Visa Status</option>
-</select>
-</div>
-</div>
-<input type="submit" value="Download">
+    <label for="destination">Destination: </label>
+    <select id="destination" required>
+        <option value="">Select Destination</option>
+    </select>
+    <label for="nationality">Nationality: </label>
+    <select id="nationality" required>
+        <option value="">Select Nationality</option>
+    </select>
+    <label for="residenceCountry">Residence Country: </label>
+    <select id="residenceCountry" required>
+        <option value="">Select Residence Country</option>
+    </select>
+    <label for="occupation">Occupation: </label>
+    <select id="occupation" required>
+        <option value="">Select Occupation</option>
+    </select>
+    <label for="purpose">Purpose of Visit: </label>
+    <select id="purpose" required>
+        <option value="">Select Purpose</option>
+    </select>
+    <label for="visaHolding">Visa Holding: </label>
+    <select id="visaHolding" required>
+        <option value="">Select Visa Status</option>
+    </select>
+    <input type="submit" value="Search Checklist">
 </form>
 
-<h2 id="result"></h2>
-<div id="downloadLink" style="display:none;"></div>
-<div id="noChecklistMessage" style="display:none; color: red; font-weight: bold;">
-No checklist file found for the selected criteria.
-</div>
+<div id="popup"></div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 GLODO | All Rights Reserved</p>
+</footer>
+
 </body>
 </html>
