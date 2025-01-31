@@ -4,201 +4,237 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checklist Download</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* Combined CSS from both pages */
 body {
-font-family: Arial, sans-serif;
-margin: 0;
-padding: 0;
-background-color: #f4f4f4;
-color: #333;
+    font-family: 'Nunito', 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background: #4A90E2;
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+    position: relative;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 3.5rem;
+}
+
+header p {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-text-align: center;
-margin-top: 20px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 form {
-width: 90%;
-max-width: 800px;
-margin: 20px auto;
-background-color: white;
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 label {
-display: block;
-margin-bottom: 8px;
-font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
 }
 
 select {
-width: 100%;
-padding: 8px;
-margin-bottom: 15px;
-border: 1px solid #ccc;
-border-radius: 4px;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 input[type="submit"] {
-width: 100%;
-padding: 10px;
-background-color: #4CAF50;
-color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-font-size: 16px;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 input[type="submit"]:hover {
-background-color: #45a049;
+    background-color: #45a049;
 }
 
 /* Two-column layout for larger screens */
 .two-column-form {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 .two-column-form label {
-margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 .two-column-form select {
-width: 100%;
+    width: 100%;
 }
 
 #result {
-text-align: center;
-margin-top: 20px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 #downloadLink {
-text-align: center;
-margin-top: 20px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 #noChecklistMessage {
-color: red;
-font-weight: bold;
-text-align: center;
-margin-top: 20px;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-.two-column-form {
-grid-template-columns: 1fr; /* Stack the columns on smaller screens */
-}
+    .two-column-form {
+        grid-template-columns: 1fr; /* Stack the columns on smaller screens */
+    }
 
-input[type="submit"] {
-width: 100%; /* Make the submit button span full width */
-}
+    input[type="submit"] {
+        width: 100%; /* Make the submit button span full width */
+    }
 }
 
 /* Further responsiveness for very small screens */
 @media (max-width: 480px) {
-h1 {
-font-size: 20px; /* Smaller title on smaller devices */
-}
+    h1 {
+        font-size: 20px; /* Smaller title on smaller devices */
+    }
 
-form {
-padding: 15px; /* Reduce padding on smaller screens */
-}
+    form {
+        padding: 15px; /* Reduce padding on smaller screens */
+    }
 
-label {
-font-size: 14px; /* Smaller label text */
-}
+    label {
+        font-size: 14px; /* Smaller label text */
+    }
 
-select, input[type="submit"] {
-font-size: 14px; /* Smaller font for selects and submit button */
-}
+    select, input[type="submit"] {
+        font-size: 14px; /* Smaller font for selects and submit button */
+    }
 }
 </style>
 <script>
 // Function to fetch checklist data from Google Sheets through the Apps Script Web App
 function fetchChecklistData() {
-const apiUrl = 'https://script.google.com/macros/s/AKfycbw3jzuUp7je0s88G_BhEwF2o6JUgjJCetMcZGBLAJ19X_6BZCwEiVkiVBpR5OAYcBqh/exec'; // Your Web App URL
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbw3jzuUp7je0s88G_BhEwF2o6JUgjJCetMcZGBLAJ19X_6BZCwEiVkiVBpR5OAYcBqh/exec'; // Your Web App URL
 
-fetch(apiUrl)
-.then(response => response.json())
-.then(data => {
-checklistData = data; // Store the fetched data for comparison
-console.log('Checklist Data Loaded:', checklistData);
-})
-.catch(error => console.error('Error loading checklist data:', error));
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            checklistData = data; // Store the fetched data for comparison
+            console.log('Checklist Data Loaded:', checklistData);
+        })
+        .catch(error => console.error('Error loading checklist data:', error));
 }
 
 // Function to populate dropdowns with predefined options
 function populateDropdowns() {
-const dropdownData = {
-destination: ['USA', 'Canada', 'Germany', 'France'],
-nationality: ['US', 'India', 'UK', 'Canada'],
-residenceCountry: ['USA', 'India', 'UK', 'Australia'],
-occupation: ['Engineer', 'Doctor', 'Teacher', 'Artist'],
-purpose: ['Business', 'Tourism', 'Study', 'Medical'],
-visaHolding: ['USA', 'Canada', 'Germany', 'France']
-};
+    const dropdownData = {
+        destination: ['USA', 'Canada', 'Germany', 'France'],
+        nationality: ['US', 'India', 'UK', 'Canada'],
+        residenceCountry: ['USA', 'India', 'UK', 'Australia'],
+        occupation: ['Engineer', 'Doctor', 'Teacher', 'Artist'],
+        purpose: ['Business', 'Tourism', 'Study', 'Medical'],
+        visaHolding: ['USA', 'Canada', 'Germany', 'France']
+    };
 
-// Populate each dropdown with options
-for (const key in dropdownData) {
-const dropdown = document.getElementById(key);
-dropdownData[key].forEach(optionText => {
-const option = document.createElement('option');
-option.value = optionText;
-option.innerHTML = optionText;
-dropdown.appendChild(option);
-});
-}
+    // Populate each dropdown with options
+    for (const key in dropdownData) {
+        const dropdown = document.getElementById(key);
+        dropdownData[key].forEach(optionText => {
+            const option = document.createElement('option');
+            option.value = optionText;
+            option.innerHTML = optionText;
+            dropdown.appendChild(option);
+        });
+    }
 }
 
 // Function to handle form submission and show checklist download link based on selected criteria
 function showDownloadLink() {
-const destination = document.getElementById("destination").value.trim().toLowerCase();
-const nationality = document.getElementById("nationality").value.trim().toLowerCase();
-const residenceCountry = document.getElementById("residenceCountry").value.trim().toLowerCase();
-const occupation = document.getElementById("occupation").value.trim().toLowerCase();
-const purpose = document.getElementById("purpose").value.trim().toLowerCase();
-const visaHolding = document.getElementById("visaHolding").value.trim().toLowerCase();
+    const destination = document.getElementById("destination").value.trim().toLowerCase();
+    const nationality = document.getElementById("nationality").value.trim().toLowerCase();
+    const residenceCountry = document.getElementById("residenceCountry").value.trim().toLowerCase();
+    const occupation = document.getElementById("occupation").value.trim().toLowerCase();
+    const purpose = document.getElementById("purpose").value.trim().toLowerCase();
+    const visaHolding = document.getElementById("visaHolding").value.trim().toLowerCase();
 
-// Hide the download link and message initially
-document.getElementById("downloadLink").style.display = "none";
-document.getElementById("noChecklistMessage").style.display = "none";
+    // Hide the download link and message initially
+    document.getElementById("downloadLink").style.display = "none";
+    document.getElementById("noChecklistMessage").style.display = "none";
 
-let found = false;
+    let found = false;
 
-// Check the selected criteria against the fetched data
-checklistData.forEach(row => {
-if (row.destination.toLowerCase() === destination &&
-row.nationality.toLowerCase() === nationality &&
-row.residenceCountry.toLowerCase() === residenceCountry &&
-row.occupation.toLowerCase() === occupation &&
-row.purpose.toLowerCase() === purpose &&
-row.visaHolding.toLowerCase() === visaHolding) {
-found = true;
-document.getElementById("downloadLink").style.display = "block";
-document.getElementById("downloadLink").innerHTML = `<a href="${row.downloadLink}" target="_blank">Download the Checklist</a>`;
-}
-});
+    // Check the selected criteria against the fetched data
+    checklistData.forEach(row => {
+        if (row.destination.toLowerCase() === destination &&
+            row.nationality.toLowerCase() === nationality &&
+            row.residenceCountry.toLowerCase() === residenceCountry &&
+            row.occupation.toLowerCase() === occupation &&
+            row.purpose.toLowerCase() === purpose &&
+            row.visaHolding.toLowerCase() === visaHolding) {
+            found = true;
+            document.getElementById("downloadLink").style.display = "block";
+            document.getElementById("downloadLink").innerHTML = `<a href="${row.downloadLink}" target="_blank">Download the Checklist</a>`;
+        }
+    });
 
-// If no match is found, show the "No checklist file found" message
-if (!found) {
-document.getElementById("noChecklistMessage").style.display = "block";
-}
+    // If no match is found, show the "No checklist file found" message
+    if (!found) {
+        document.getElementById("noChecklistMessage").style.display = "block";
+    }
 }
 
 // Call fetchChecklistData when the page loads to load the checklist data
 window.onload = function() {
-fetchChecklistData();
-populateDropdowns();
+    fetchChecklistData();
+    populateDropdowns();
 };
 </script>
 </head>
 <body>
+
+<!-- Header -->
+<header>
+    <h1>GLODO</h1>
+    <p>Your Trusted Partner for Visa Consultation & Flight Ticket Booking</p>
+</header>
+
 <h1>Checklist Download</h1>
 <form onsubmit="event.preventDefault(); showDownloadLink();">
 <div class="two-column-form">
@@ -247,5 +283,11 @@ populateDropdowns();
 <div id="noChecklistMessage" style="display:none; color: red; font-weight: bold;">
 No checklist file found for the selected criteria.
 </div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 GLODO | All Rights Reserved</p>
+</footer>
+
 </body>
 </html>
