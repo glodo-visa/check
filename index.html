@@ -93,6 +93,15 @@ input[type="submit"]:hover {
 #downloadLink {
     text-align: center;
     margin-top: 20px;
+    background-color: #e2f1ff; /* Different style for file link */
+    padding: 10px;
+    border-radius: 4px;
+}
+
+#downloadLink a {
+    color: #0073e6;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 #noChecklistMessage {
@@ -100,6 +109,9 @@ input[type="submit"]:hover {
     font-weight: bold;
     text-align: center;
     margin-top: 20px;
+    background-color: #ffe2e2; /* Different style for no checklist message */
+    padding: 10px;
+    border-radius: 4px;
 }
 
 @media (max-width: 768px) {
@@ -238,7 +250,7 @@ window.onload = function() {
     <select id="visaHolding" required>
         <option value="">Select Visa Status</option>
     </select>
-    <input type="submit" value="Download">
+    <input type="submit" value="Search Checklist">
 </form>
 
 <h2 id="result"></h2>
