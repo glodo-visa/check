@@ -123,6 +123,38 @@ input[type="submit"]:hover {
     background-color: #ffd5d5;
     font-size: 1.2rem;
 }
+/* Breadcrumb Navigation */
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+
+        .breadcrumb li {
+            margin-right: 10px;
+        }
+
+        .breadcrumb li a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .breadcrumb li a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb li::after {
+            content: ">>";
+            margin-left: 10px;
+        }
+
+        .breadcrumb li:last-child::after {
+            content: "";
+        }
+
 </style>
 <script>
 let checklistData = [];
@@ -254,6 +286,12 @@ window.onload = function() {
 </form>
 
 <div id="popup"></div>
+
+<!-- Breadcrumb Navigation -->
+<ul class="breadcrumb">
+    <li><a href="homepage.html">Home</a></li>
+    <li>Visa Consultation Services</li>
+</ul>
 
 <!-- Footer -->
 <footer>
